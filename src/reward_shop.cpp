@@ -231,7 +231,7 @@ public:
                 say_timer -= diff;
         }
     };
-    CreatureAI *GetAI(Creature *creature) const
+    CreatureAI *GetAI(Creature *creature) const override
     {
         return new npc_reward_shopAI(creature);
     }
