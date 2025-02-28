@@ -12,16 +12,16 @@ script made by talamortis
 
 */
 
-#include "Configuration/Config.h"
-#include "Player.h"
-#include "Creature.h"
 #include "AccountMgr.h"
-#include "ScriptMgr.h"
+#include "Chat.h"
+#include "Configuration/Config.h"
+#include "Creature.h"
 #include "Define.h"
 #include "GossipDef.h"
+#include "Player.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
-#include "Chat.h"
+#include "ScriptMgr.h"
 
 class reward_shop : public CreatureScript
 {
@@ -30,7 +30,7 @@ public:
 
     bool failedcode;
 
-    bool OnGossipHello(Player *player, Creature *creature)
+    bool OnGossipHello(Player *player, Creature *creature) override
     {
         if (player->IsInCombat())
             return false;
@@ -44,15 +44,13 @@ public:
         AddGossipItemFor(player, GOSSIP_ICON_CHAT, "I dont have a code.", GOSSIP_SENDER_MAIN, 3);
 
         if (sConfigMgr->GetOption<bool>("AllowGM", 1) && player->IsGameMaster())
-        {
             AddGossipItemFor(player, GOSSIP_ICON_BATTLE, "[GM] I would like generate a code.", GOSSIP_SENDER_MAIN, 4);
-        }
 
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
         return true;
     }
 
-    bool OnGossipSelect(Player *player, Creature *creature, uint32 /* sender */, uint32 action)
+    bool OnGossipSelect(Player *player, Creature *creature, uint32 /* sender */, uint32 action) override
     {
         player->PlayerTalkClass->ClearMenus();
         std::string info = sConfigMgr->GetOption<std::string>("WebsiteAddress", "You can get codes by visiting the online store at (website address)");
@@ -98,7 +96,7 @@ public:
         return true;
     }
 
-    bool OnGossipSelectCode(Player *player, Creature *creature, uint32 /* sender */, uint32, const char *code)
+    bool OnGossipSelectCode(Player *player, Creature *creature, uint32 /* sender */, uint32, const char *code override
     {
         ObjectGuid playerguid = player->GetGUID();
         std::string playerIP = player->GetSession()->GetRemoteAddress();
@@ -160,9 +158,7 @@ public:
                 }
 
                 if (count > 0 && action_data)
-                {
                     player->AddItem(action_data, quantity);
-                }
                 break;
             case 2: /* Gold */
                 player->ModifyMoney(action_data * 10000);
@@ -189,9 +185,8 @@ public:
                     player->UpdateSkillsToMaxSkillsForLevel();
                     ChatHandler(player->GetSession()).PSendSysMessage("CHAT OUTPUT: You´ve reached level 80.");
                 }
-                else {
+                else
                     ChatHandler(player->GetSession()).PSendSysMessage("CHAT OUTPUT: You´re already level 80.");
-                }
                 break;
             }
 
@@ -207,23 +202,21 @@ public:
         uint32 say_timer;
         bool canSay;
 
-        void Reset()
+        void Reset() override
         {
             say_timer = 1000;
             canSay = false;
         }
 
-        void MoveInLineOfSight(Unit *who)
+        void MoveInLineOfSight(Unit *who) override
         {
             if (me->IsWithinDist(who, 5.0f) && who->GetTypeId() == TYPEID_PLAYER)
-            {
                 canSay = true;
-            }
             else
                 canSay = false;
         }
 
-        void UpdateAI(uint32 diff)
+        void UpdateAI(uint32 diff) override
         {
             if (say_timer <= diff)
             {
