@@ -177,7 +177,7 @@ public:
                 ChatHandler(player->GetSession()).PSendSysMessage("CHAT OUTPUT: Please log out for race change.");
                 break;
             case 6: /* Level Up */
-                if (player->getLevel() < 80) {
+                if (player->GetLevel() < 80) {
                     player->SetLevel(80);
                     player->SetUInt32Value(PLAYER_XP, 0);
                     player->SetUInt32Value(PLAYER_NEXT_LEVEL_XP, 0);
