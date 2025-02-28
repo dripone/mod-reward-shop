@@ -180,6 +180,19 @@ public:
                 player->SetAtLoginFlag(AT_LOGIN_CHANGE_RACE);
                 ChatHandler(player->GetSession()).PSendSysMessage("CHAT OUTPUT: Please log out for race change.");
                 break;
+            case 6: /* Level Up */
+                if (player->getLevel() < 80) {
+                    player->SetLevel(80);
+                    player->SetUInt32Value(PLAYER_XP, 0);
+                    player->SetUInt32Value(PLAYER_NEXT_LEVEL_XP, 0);
+                    player->SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, 80);
+                    player->UpdateSkillsToMaxSkillsForLevel();
+                    ChatHandler(player->GetSession()).PSendSysMessage("CHAT OUTPUT: You´ve reached level 80.");
+                }
+                else {
+                    ChatHandler(player->GetSession()).PSendSysMessage("CHAT OUTPUT: You´re already level 80.");
+                }
+                break;
             }
 
         } while (result->NextRow());
